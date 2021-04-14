@@ -544,4 +544,68 @@ def getTrendingVideoByCountry(catalog, country):
         i += 1
 
     return [lt.getElement(por_nombre, max_index), max_count]
+
+
+def getTrendingVideoByCategory(catalog, category):
+
+    category_mp=mp.get(catalog['categories'],category)
+   
+    
+    if category_mp:
+        a=me.getValue(category_mp)
+
+    """por_nombre = mg.sort (a, cmpVideosByName)
+
+    name = ""
+    max_index = 0
+    max_count = 0
+    count = 0
+    index = 0
+    i = 1
+
+    while i <= lt.size(por_nombre):
+        if name.lower() == lt.getElement(por_nombre, i):
+            count += 1
+        else:
+            name = lt.getElement(por_nombre, i)
+            index = i
+            count = 1
+        
+        if count > max_count:
+            max_index = index
+            max_count = count
+        i += 1
+
+
+    return [lt.getElement(por_nombre, max_index), max_count]"""
+    return [a,8]
+    
+
+
+def getTrendingByLikes(catalog, tag, country, n):
+
+    ranked_list = None
+
+    country_mp = mp.get(catalog['countries'], country)
+    countries = None
+    if country_mp:
+        countries = me.getValue(country_mp)
+    else: 
+        print("NO se encontro la ciudad.")
+    
+
+    tag_mp= mp.get(countries["tags"], tag)
+    tags=None
+
+    if tag_mp:
+        tags= me.getValue(tag_mp)
+    else:
+        print("NO se encontro el tag")
+
+    sorted_list = mg.sort(tags, compareVideosLikes)
+
+    ranked_list = lt.subList(sorted_list, 1, n)
+
+    return ranked_list
+
     

@@ -65,7 +65,9 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- Consultar los videos con más vistas y que son tendencia en un país")
     print("3- Consultar video que ha sido tendencia para un país")
-    print("4- Salir")
+    print("4- Consultar los videos que han estado mas en tendencia en una categoría")
+    print("5- Consultar los videos con mas likes dado un país y un tag")
+    print("6- Salir")
 
 catalog = None
 
@@ -103,6 +105,19 @@ while True:
 
         video = result
         print( 'Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' Country: ' + video['country'] + ' Días: '+ str(count))
+
+    elif int(inputs[0]) == 4:
+        category= input("Ingrese la categoria que desea consultar: ")
+        [result, count]=controller.getTrendingVideoByCategory(catalog,category)
+        video = result
+        print( 'Title: ' + video[0] + ' Channel_title: ' + video['channel_title'] + ' Category Id: ' + video['category_id'] + ' Días: '+ str(count))
+
+    elif int(inputs[0])==5:
+        tag=input("Ingrese el tag: ").lower()
+        country=input("Ingrese la Ciudad: ").lower()
+        n=input("Ingrese el Numero de videos que desea listar: ").lower()
+        video=controller.getTrendingByLikes(catalog, tag, country, n)
+        print( 'Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' Publlish_Time: ' + video['publish_time'] + ' Views: '+ video["views"] + " Likes: " + video["likes"] + " dislikes: "+ video["dislikes"] + "Tags: " + video["tags"])
 
     else:
         sys.exit(0)

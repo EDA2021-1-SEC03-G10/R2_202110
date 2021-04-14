@@ -103,6 +103,12 @@ def getVideosLikesByCategory(catalog,category,n):
 def getTrendingVideoByCountry(catalog, country):
     return model.getTrendingVideoByCountry(catalog, country)
 
+def getTrendingVideoByCategory(catalog, category):
+    return model.getTrendingVideoByCategory(catalog,category)
+
+def getTrendingByLikes(catalog, tag, country, n):
+    return model.getTrendingByLikes(catalog, tag, country, n)
+
 # ======================================
 # Funciones para medir tiempo y memoria
 # ======================================
