@@ -93,7 +93,24 @@ def sortVideos(catalog, n, country, category):
     """
     Ordena los videos por views
     """
-    return model.sortVideos(catalog, n, country, category)
+    videos = None
+    delta_time = -1.0
+    delta_memory = -1.0
+    
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
+    videos = model.sortVideos(catalog, n, country, category)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    return videos, delta_time, delta_memory
 
 # Funciones de consulta sobre el catálogo
 
@@ -101,13 +118,47 @@ def getVideosLikesByCategory(catalog,category,n):
     return model.getVideosLikesByCategory(catalog,category,n)
 
 def getTrendingVideoByCountry(catalog, country):
-    return model.getTrendingVideoByCountry(catalog, country)
+    delta_time = -1.0
+    delta_memory = -1.0
+    
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
+    [video,count] = model.getTrendingVideoByCountry(catalog, country)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    return video, count, delta_time, delta_memory
 
 def getTrendingVideoByCategory(catalog, category):
     return model.getTrendingVideoByCategory(catalog,category)
 
 def getTrendingByLikes(catalog, tag, country, n):
-    return model.getTrendingByLikes(catalog, tag, country, n)
+    delta_time = -1.0
+    delta_memory = -1.0
+    
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
+    videos = model.getTrendingByLikes(catalog, tag, country, n)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    return videos, delta_time, delta_memory
+
+  
 
 # ======================================
 # Funciones para medir tiempo y memoria

@@ -227,7 +227,7 @@ def newTag(name):
     tag = {'name': "",
               "videos": None}
     tag['name'] = name
-    tag['videos'] = lt.newList('SINGLE_LINKED', compareTagsByName)
+    tag['videos'] = lt.newList('SINGLE_LINKED', compareVideoId)
     return tag
     
 def newCategoryId(categoryId):
@@ -284,18 +284,33 @@ def newCategory(id, name):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def compareTagsByName(keyname, tag):
+# def compareTagsByName(keyname, tag):
+#     """
+#     Compara dos nombres de tag. El primero es una cadena
+#     y el segundo un entry de un map
+#     """
+#     keyname = keyname.lower()
+#     tagentry = me.getKey(tag)
+#     tagentry = tagentry.lower()
+#     if (keyname == tagentry):
+#         return 0
+#     elif (keyname > tagentry):
+#         return 1
+#     else:
+#         return -1
+
+def compareTagsByName(tag1, tag2):
     """
-    Compara dos nombres de tag. El primero es una cadena
+    Compara dos nombres de tag. El primero es un diccionario
     y el segundo un entry de un map
     """
-    keyname = keyname.lower()
-    tagentry = me.getKey(tag)
-    tagentry = tagentry.lower()
-    if (keyname == tagentry):
+    tagname1 = tag1["name"].lower()
+    tagname2 = tag2["name"].lower()
+
+    
+    if (tagname1 == tagname2):
         return 0
-    elif (keyname > tagentry):
-        return 1
+    
     else:
         return -1
 
@@ -519,8 +534,6 @@ def getTrendingVideoByCountry(catalog, country):
     
     sub_list = lt.subList(por_pais, index_inicio, index_fin-index_inicio)
 
-    
-
     por_nombre = mg.sort (sub_list, cmpVideosByName)
 
     name = ""
@@ -585,27 +598,26 @@ def getTrendingVideoByCategory(catalog, category):
 def getTrendingByLikes(catalog, tag, country, n):
 
     ranked_list = None
+    country_mp = mp.get(catalog["countries"], country)
+    tag_mp = mp.get(catalog["tags"],tag)
 
-    country_mp = mp.get(catalog['countries'], country)
-    countries = None
     if country_mp:
-        countries = me.getValue(country_mp)
-    else: 
-        print("NO se encontro la ciudad.")
+        videos_country = me.getValue(country_mp)["videos"]
+        videos_tag = me.getValue(tag_mp)["videos"]
+
+        index = 1
+
+        result = lt.newList('SINGLE_LINKED', compareVideoId)
+
+        while index <= lt.size(videos_country):
+            video = lt.getElement(videos_country,index)
+            if ((lt.isPresent(videos_tag,video))!=0):
+                lt.addLast(result, video)
+            index += 1
+        
+        result2 = mg.sort(result, compareVideosLikes)
+
+        ranked_list = lt.subList(result2, 1, n)
     
-
-    tag_mp= mp.get(countries["tags"], tag)
-    tags=None
-
-    if tag_mp:
-        tags= me.getValue(tag_mp)
-    else:
-        print("NO se encontro el tag")
-
-    sorted_list = mg.sort(tags, compareVideosLikes)
-
-    ranked_list = lt.subList(sorted_list, 1, n)
-
     return ranked_list
 
-    

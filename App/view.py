@@ -42,13 +42,22 @@ def initCatalog():
 
 def printResults(ord_videos): 
     size = lt.size(ord_videos) 
-    #if size > sample: 
-        #print("Los primeros ", sample, " videos ordenados son:") 
+
     i=1 
     while i <= size: 
         video = lt.getElement(ord_videos,i) 
         print('Trending_date: ' + video['trending_date'] + ' Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' publish_time: ' + video['publish_time'] +
                 ' views: '+ video['views'] + ' likes: '+ video['likes'] + ' dislikes: '+ video['dislikes']) 
+        i+=1
+
+def printResultsVideos(ord_videos): 
+    size = lt.size(ord_videos) 
+
+    i=1 
+    while i <= size: 
+        video = lt.getElement(ord_videos,i) 
+        print('Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' publish_time: ' + video['publish_time'] +
+                ' views: '+ video['views'] + ' likes: '+ video['likes'] + ' dislikes: '+ video['dislikes'] + " Tags: " + video['tags']) 
         i+=1
 
 def loadData(catalog):
@@ -97,14 +106,19 @@ while True:
         else:
             result = controller.sortVideos(catalog, size, pais, categoria.lower()) 
 
-        printResults(result)
+        printResults(result[0])
+        print("Tiempo [ms]: ", f"{result[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{result[2]:.3f}")
 
     elif int(inputs[0]) == 3:
         country = input ("Ingrese el país para el cual desea realizar la consulta: ")
-        [result, count] = controller.getTrendingVideoByCountry(catalog, country)
+        result = controller.getTrendingVideoByCountry(catalog, country)
 
-        video = result
+        video = result[0]
+        count = result[1]
         print( 'Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' Country: ' + video['country'] + ' Días: '+ str(count))
+        print("Tiempo [ms]: ", f"{result[2]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{result[3]:.3f}")
 
     elif int(inputs[0]) == 4:
         category= input("Ingrese la categoria que desea consultar: ")
@@ -114,11 +128,13 @@ while True:
 
     elif int(inputs[0])==5:
         tag=input("Ingrese el tag: ").lower()
-        country=input("Ingrese la Ciudad: ").lower()
-        n=input("Ingrese el Numero de videos que desea listar: ").lower()
-        video=controller.getTrendingByLikes(catalog, tag, country, n)
-        print( 'Title: ' + video['title'] + ' Channel_title: ' + video['channel_title'] + ' Publlish_Time: ' + video['publish_time'] + ' Views: '+ video["views"] + " Likes: " + video["likes"] + " dislikes: "+ video["dislikes"] + "Tags: " + video["tags"])
-
+        country=input("Ingrese el País: ").lower()
+        n=int(input("Ingrese el Numero de videos que desea listar: "))
+        result=controller.getTrendingByLikes(catalog, tag, country, n)
+        printResultsVideos(result[0])
+        
+        print("Tiempo [ms]: ", f"{result[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{result[2]:.3f}")
     else:
         sys.exit(0)
 sys.exit(0)
